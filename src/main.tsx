@@ -2,12 +2,14 @@ import React from "react"
 import ReactDOM from "react-dom/client"
 import { RouterProvider, createBrowserRouter } from "react-router-dom"
 import Root from "./routes/_layout"
-import Search from "./routes/search"
+import Search, { loader } from "./routes/search"
 import Detail from "./routes/detail"
 import Favorite from "./routes/favorites"
 import Error from "./routes/error"
 import { ChakraProvider } from "@chakra-ui/react"
+import { QueryClient, QueryClientProvider } from "react-query"
 
+const queryClient = new QueryClient()
 const router = createBrowserRouter([
   {
     path: "/",
@@ -17,6 +19,7 @@ const router = createBrowserRouter([
       {
         index: true,
         element: <Search />,
+        loader: loader(queryClient),
       },
       {
         path: "detail/:movieId",
@@ -33,7 +36,9 @@ const router = createBrowserRouter([
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <ChakraProvider>
-      <RouterProvider router={router} />
+      <QueryClientProvider client={queryClient}>
+        <RouterProvider router={router} />
+      </QueryClientProvider>
     </ChakraProvider>
   </React.StrictMode>
 )
