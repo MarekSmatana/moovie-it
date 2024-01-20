@@ -1,6 +1,6 @@
 import { MovieShort } from "../types"
 
-const FAVORITE_KEY = "favoriteRecords"
+export const FAVORITE_KEY = "favoriteRecords"
 
 export function setFavorite(record: MovieShort, isFavorite: boolean) {
   if (!window.localStorage) return false
