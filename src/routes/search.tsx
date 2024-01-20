@@ -9,16 +9,24 @@ import {
   Spinner,
 } from "@chakra-ui/react"
 import { QueryClient, useQuery } from "react-query"
-import { Form, LoaderFunctionArgs, useLoaderData } from "react-router-dom"
+import {
+  Form,
+  LoaderFunctionArgs,
+  useLoaderData,
+  useSubmit,
+} from "react-router-dom"
 import { MovieSearchResponse } from "../types"
 import MoviesList from "../components/MoviesList"
+import Pagination from "../components/Pagination"
 
-const moviesSearchQuery = (query?: string) => ({
-  queryKey: query,
+const MOVIES_PER_PAGE = 10
+
+const moviesSearchQuery = (page: number, query?: string) => ({
+  queryKey: query + page.toString(),
   queryFn: async () => {
     if (!query || !query.trim()) return undefined
     const searchResult = await fetch(
-      "https://omdbapi.com/?apikey=dba850f1&type=movie&page=2&s=" + query
+      `https://omdbapi.com/?apikey=dba850f1&type=movie&page=${page}&s=${query}`
     )
 
     if (!searchResult) {
@@ -33,32 +41,35 @@ const moviesSearchQuery = (query?: string) => ({
 })
 
 type SearchLoaderData = {
-  query?: string
+  q?: string
+  p: number
 }
 export const loader =
   (queryClient: QueryClient) =>
   async ({ request }: LoaderFunctionArgs) => {
     const url = new URL(request.url)
-    const query = url.searchParams.get("query")?.trim()
+    const q = url.searchParams.get("q")?.trim()
+    const p = Number(url.searchParams.get("p") ?? 1)
 
     if (
-      query &&
-      !queryClient.getQueriesData(moviesSearchQuery(query).queryKey ?? "")
+      q &&
+      !queryClient.getQueriesData(moviesSearchQuery(p, q).queryKey ?? "")
     ) {
-      await queryClient.fetchQuery(moviesSearchQuery(query))
+      await queryClient.fetchQuery(moviesSearchQuery(p, q))
     }
 
-    return { query }
+    return { q, p }
   }
 
 export default function SearchRoute() {
-  const { query } = useLoaderData() as SearchLoaderData
-  const { data, isError, isLoading } = useQuery(moviesSearchQuery(query))
+  const { q, p } = useLoaderData() as SearchLoaderData
+  const { data, isError, isLoading } = useQuery(moviesSearchQuery(p, q))
+  const submit = useSubmit()
 
-  const showError = isError || data?.Response === "False"
-  const isData = !!data && data.Response === "True"
   const error =
     data?.Response === "False" ? data.Error : "Unexpected error happened."
+  const showData = !!data && data.Response === "True" && data.Search.length > 0
+  const showError = isError || data?.Response === "False"
 
   return (
     <Container centerContent maxW="container.lg">
@@ -67,7 +78,12 @@ export default function SearchRoute() {
           <InputLeftElement>
             <SearchIcon color="gray" />
           </InputLeftElement>
-          <Input name="query" placeholder="Search movie.." />
+          <Input
+            name="q"
+            placeholder="Search movie.."
+            variant="filled"
+            autoFocus
+          />
           {isLoading && (
             <InputRightElement>
               <Spinner />
@@ -76,7 +92,23 @@ export default function SearchRoute() {
         </InputGroup>
       </Form>
       {showError && <Center py={16}>{error}</Center>}
-      {isData && data.Search.length > 0 && <MoviesList data={data.Search} />}
+      {showData && (
+        <>
+          <Pagination
+            currentPage={p}
+            itemsCount={data.totalResults}
+            itemsPerPage={MOVIES_PER_PAGE}
+            onPageChange={(page) => {
+              const params = new URLSearchParams({
+                q: q ?? "",
+                p: page.toString(),
+              })
+              submit(params)
+            }}
+          />
+          <MoviesList data={data.Search} />
+        </>
+      )}
     </Container>
   )
 }
