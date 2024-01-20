@@ -9,19 +9,19 @@ import {
   Stack,
   VStack,
 } from "@chakra-ui/react"
+import React from "react"
 import { useQuery } from "react-query"
 import { useParams } from "react-router-dom"
+import * as favoriteService from "../services/favoriteService"
 
 const movieDetailQuery = (movieId?: string) => ({
   queryKey: movieId,
   queryFn: async () => {
     if (!movieId || !movieId.trim()) return undefined
 
-    console.log("hee?", movieId)
     const searchResult = await fetch(
       "https://omdbapi.com/?apikey=dba850f1&plot=full&i=" + movieId
     )
-    console.log("searchResult", searchResult)
 
     if (!searchResult) {
       throw new Response("", {
@@ -40,8 +40,19 @@ type DetailRouteParams = {
 export default function DetailRoute() {
   const { movieId } = useParams<DetailRouteParams>()
   const { data, isLoading } = useQuery(movieDetailQuery(movieId))
-  console.log("movieId", movieId)
-  console.log("data", data)
+  const [isFavorite, setIsFavorite] = React.useState(false)
+
+  React.useEffect(() => {
+    if (data) {
+      const favorite = favoriteService.getFavorite(data.imdbID)
+      setIsFavorite(!!favorite)
+    }
+  }, [data])
+
+  const handleFavorite = () => {
+    const favorite = favoriteService.setFavorite(data, !isFavorite)
+    setIsFavorite(favorite)
+  }
 
   if (isLoading)
     return (
@@ -74,9 +85,8 @@ export default function DetailRoute() {
             icon={<StarIcon />}
             aria-label="favorite"
             variant="none"
-            onClick={() => {
-              console.log(data.imdbID)
-            }}
+            color={isFavorite ? "yellow" : "white"}
+            onClick={handleFavorite}
           />
         </HStack>
         <Box>{data.Genre.replaceAll(",", " /")}</Box>
