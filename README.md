@@ -1,30 +1,15 @@
-# React + TypeScript + Vite
+# Moovie It 🎥
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Search and save your favorite movies.
 
-Currently, two official plugins are available:
+## Movies search
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+[react-query](https://tanstack.com/query/v3/docs/react/overview) is used to handle async fetch movies from [https://www.omdbapi.com/] api via vanilla [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch).
 
-## Expanding the ESLint configuration
+## Saving favorites
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+Saving favorite movies on client side is handled by [localStorage](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage).
 
-- Configure the top-level `parserOptions` property like this:
+## Styling
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: "latest",
-    sourceType: "module",
-    project: ["./tsconfig.json", "./tsconfig.node.json"],
-    tsconfigRootDir: __dirname,
-  },
-}
-```
-
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+[Chakra UI](https://chakra-ui.com/) was used to compose this App.
