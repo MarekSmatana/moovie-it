@@ -13,3 +13,7 @@ Saving favorite movies on client side is handled by [localStorage](https://devel
 ## Styling
 
 [Chakra UI](https://chakra-ui.com/) was used to compose this App.
+
+## Testing
+
+Project uses [Jest](https://jestjs.io/) library fro testing purposes.
