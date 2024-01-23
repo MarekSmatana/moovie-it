@@ -12,7 +12,8 @@ import {
 import React from "react"
 import { useQuery } from "react-query"
 import { useParams } from "react-router-dom"
-import * as favoriteService from "../services/favoriteService"
+import { useFavoriteContext } from "../storage/FavoriteContext"
+import { MovieDetailResponse } from "../types"
 
 const movieDetailQuery = (movieId?: string) => ({
   queryKey: movieId,
@@ -39,20 +40,14 @@ type DetailRouteParams = {
 }
 export default function DetailRoute() {
   const { movieId } = useParams<DetailRouteParams>()
-  const { data, isLoading } = useQuery(movieDetailQuery(movieId))
-  const [isFavorite, setIsFavorite] = React.useState(false)
-
-  React.useEffect(() => {
-    if (data) {
-      const favorite = favoriteService.getFavorite(data.imdbID)
-      setIsFavorite(!!favorite)
-    }
-  }, [data])
-
-  const handleFavorite = () => {
-    const favorite = favoriteService.setFavorite(data, !isFavorite)
-    setIsFavorite(favorite)
-  }
+  const { data, isLoading } = useQuery<MovieDetailResponse>(
+    movieDetailQuery(movieId)
+  )
+  const { favorites, setFavorite } = useFavoriteContext()
+  const isFavorite = React.useMemo(() => {
+    if (!data || "Error" in data) return false
+    return favorites.find((f) => f.imdbID === data.imdbID)
+  }, [favorites, data])
 
   if (isLoading)
     return (
@@ -60,6 +55,14 @@ export default function DetailRoute() {
         <Spinner size="xl" />
       </Center>
     )
+
+  if (!data || "Error" in data)
+    return (
+      <Center my={16}>
+        <Box as="h2">{data?.Error ?? "Unexpected error occurred."}</Box>
+      </Center>
+    )
+
   return (
     <Stack
       direction={["column", "column", "row"]}
@@ -68,8 +71,8 @@ export default function DetailRoute() {
       alignItems="center"
     >
       <Image
-        src={data?.Poster}
-        alt={data?.Title}
+        src={data.Poster}
+        alt={data.Title}
         objectFit="cover"
         width={300}
         h={400}
@@ -79,17 +82,19 @@ export default function DetailRoute() {
       <VStack justify="center">
         <HStack>
           <Box fontWeight="bold" as="h1" fontSize="lg">
-            {data?.Title}
+            {data.Title}
           </Box>
           <IconButton
             icon={<StarIcon />}
             aria-label="favorite"
             variant="none"
             color={isFavorite ? "yellow" : "white"}
-            onClick={handleFavorite}
+            onClick={() => {
+              setFavorite(data, !isFavorite)
+            }}
           />
         </HStack>
-        <Box>{data.Genre.replaceAll(",", " /")}</Box>
+        <Box>{data.Genre.replace(/,/g, " /")}</Box>
         <Box>
           {data.Country} • {data.Year} • {data.Runtime}
         </Box>

@@ -2,14 +2,14 @@ import { MovieShort } from "../types"
 
 export const FAVORITE_KEY = "favoriteRecords"
 
-export function setFavorite(record: MovieShort, isFavorite: boolean) {
+export function setFavorite(movie: MovieShort, isFavorite: boolean) {
   if (!window.localStorage) return false
 
   let favorites = getFavorites()
   if (!isFavorite)
-    favorites = favorites.filter((r) => r.imdbID !== record.imdbID)
+    favorites = favorites.filter((r) => r.imdbID !== movie.imdbID)
   if (isFavorite) {
-    favorites.push(record)
+    favorites.push(movie)
   }
 
   window.localStorage.setItem(FAVORITE_KEY, JSON.stringify(favorites))

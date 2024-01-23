@@ -1,18 +1,9 @@
 import { Box } from "@chakra-ui/react"
 import MoviesList from "../components/MoviesList"
-import * as favoriteService from "../services/favoriteService"
-import React from "react"
-import { MovieShort } from "../types"
+import { useFavoriteContext } from "../storage/FavoriteContext"
 
 export default function FavoritesRoute() {
-  const [favorites, setFavorites] = React.useState(
-    favoriteService.getFavorites()
-  )
-
-  const handleRemoveFavorite = (movie: MovieShort) => {
-    setFavorites((prev) => prev.filter((f) => f.imdbID !== movie.imdbID))
-    favoriteService.setFavorite(movie, false)
-  }
+  const { favorites, setFavorite } = useFavoriteContext()
 
   return favorites.length === 0 ? (
     <Box
@@ -25,6 +16,11 @@ export default function FavoritesRoute() {
       No favorite movies.
     </Box>
   ) : (
-    <MoviesList data={favorites} onMovieRemove={handleRemoveFavorite} />
+    <MoviesList
+      data={favorites}
+      onMovieRemove={(movie) => {
+        setFavorite(movie, false)
+      }}
+    />
   )
 }

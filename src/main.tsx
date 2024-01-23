@@ -8,6 +8,7 @@ import Favorite from "./routes/favorites"
 import Error from "./routes/error"
 import { ChakraProvider } from "@chakra-ui/react"
 import { QueryClient, QueryClientProvider } from "react-query"
+import { FavoriteContextProvider } from "./storage/FavoriteContext"
 
 const queryClient = new QueryClient()
 const router = createBrowserRouter([
@@ -37,7 +38,9 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <ChakraProvider>
       <QueryClientProvider client={queryClient}>
-        <RouterProvider router={router} />
+        <FavoriteContextProvider>
+          <RouterProvider router={router} />
+        </FavoriteContextProvider>
       </QueryClientProvider>
     </ChakraProvider>
   </React.StrictMode>
