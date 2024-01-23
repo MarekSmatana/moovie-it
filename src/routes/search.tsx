@@ -26,7 +26,7 @@ const moviesSearchQuery = (page: number, query?: string) => ({
   queryFn: async () => {
     if (!query || !query.trim()) return undefined
     const searchResult = await fetch(
-      `https://omdbapi.com/?apikey=dba850f1&type=movie&page=${page}&s=${query}`
+      `https://omdbapi.com/?apikey=dba850f1&page=${page}&s=${query}`
     )
 
     if (!searchResult) {
