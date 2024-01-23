@@ -1,6 +1,5 @@
 import { SearchIcon } from "@chakra-ui/icons"
 import {
-  Center,
   Container,
   Input,
   InputGroup,
@@ -18,6 +17,7 @@ import {
 import { MovieSearchResponse } from "../types"
 import MoviesList from "../components/MoviesList"
 import Pagination from "../components/Pagination"
+import ErrorText from "../components/ErrorText"
 
 const MOVIES_PER_PAGE = 10
 
@@ -91,7 +91,7 @@ export default function SearchRoute() {
           )}
         </InputGroup>
       </Form>
-      {showError && <Center py={16}>{error}</Center>}
+      {showError && <ErrorText text={error} />}
       {showData && (
         <>
           <Pagination

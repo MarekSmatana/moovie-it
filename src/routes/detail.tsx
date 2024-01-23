@@ -14,6 +14,7 @@ import { useQuery } from "react-query"
 import { useParams } from "react-router-dom"
 import { useFavoriteContext } from "../storage/FavoriteContext"
 import { MovieDetailResponse } from "../types"
+import ErrorText from "../components/ErrorText"
 
 const movieDetailQuery = (movieId?: string) => ({
   queryKey: movieId,
@@ -57,11 +58,7 @@ export default function DetailRoute() {
     )
 
   if (!data || "Error" in data)
-    return (
-      <Center my={16}>
-        <Box as="h2">{data?.Error ?? "Unexpected error occurred."}</Box>
-      </Center>
-    )
+    return <ErrorText text={data?.Error ?? "Unexpected error occurred."} />
 
   return (
     <Stack
