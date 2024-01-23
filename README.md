@@ -10,6 +10,10 @@ Search and save your favorite movies.
 
 Saving favorite movies on client side is handled by [localStorage](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage).
 
+## State management
+
+Favorite movies are kept loaded between pages shanks to [React Context](https://legacy.reactjs.org/docs/context.html).
+
 ## Styling
 
 [Chakra UI](https://chakra-ui.com/) was used to compose this App.
