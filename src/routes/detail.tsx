@@ -93,15 +93,15 @@ export default function DetailRoute() {
         <Box>
           {data.Country} • {data.Year} • {data.Runtime}
         </Box>
-        <HStack mt={4}>
+        <HStack mt={4} alignSelf="start" alignItems="start">
           <Box fontWeight="bold">Writer:</Box>
           <Box>{data.Writer}</Box>
         </HStack>
-        <HStack>
+        <HStack alignSelf="start" alignItems="start">
           <Box fontWeight="bold">Director:</Box>
           <Box>{data.Director}</Box>
         </HStack>
-        <HStack>
+        <HStack alignSelf="start" alignItems="start">
           <Box fontWeight="bold">Actors:</Box>
           <Box>{data.Actors}</Box>
         </HStack>
