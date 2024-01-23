@@ -4,7 +4,7 @@ Search and save your favorite movies.
 
 ## Movies search
 
-[react-query](https://tanstack.com/query/v3/docs/react/overview) is used to handle async fetch movies from [https://www.omdbapi.com/] api via vanilla [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch).
+[react-query](https://tanstack.com/query/v3/docs/react/overview) is used to handle async fetch movies from [https://www.omdbapi.com](https://www.omdbapi.com) api via vanilla [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch).
 
 ## Saving favorites
 
